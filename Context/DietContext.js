@@ -5,8 +5,8 @@ export const DietContext = createContext();
 export const DietProvider = ({ children }) => {
   const [dietEntries, setDietEntries] = useState([]);
 
-  const addDietEntry = (entry) => {
-    setDietEntries((prev) => [...prev, entry]);
+  const addDietEntry = (newDietEntry) => {
+    setDietEntries((prevDietEntries) => [...prevDietEntries, newDietEntry]);
   };
 
   return (

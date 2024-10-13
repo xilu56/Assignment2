@@ -33,7 +33,7 @@ const DietStack = () => {
       }}
     >
       <Stack.Screen name="DietScreen" component={Diet} options={{ title: 'Diet' }} />
-      <Stack.Screen name="AddDietEntry" component={AddDietEntry} options={{ title: 'Add Diet Entry' }} />
+      <Stack.Screen name="AddADiet" component={AddADiet} options={{ title: 'Add A Diet' }} />
     </Stack.Navigator>
   );
 };

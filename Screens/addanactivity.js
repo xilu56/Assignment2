@@ -124,8 +124,8 @@ export default function AddAnActivity({ navigation }) {
       )}
 
       <View style={styles.buttonContainer}>
-        <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.buttonBlue} />
-        <Button title="Save" onPress={handleSave} color={theme.buttonBlue} />
+        <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.Button} />
+        <Button title="Save" onPress={handleSave} color={theme.Button} />
       </View>
     </View>
   );
