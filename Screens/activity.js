@@ -1,5 +1,5 @@
 import React, { useContext, useLayoutEffect } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet} from 'react-native';
 import ItemsList from '../Components/ItemsList';
 import { ActivityContext } from '../Context/ActivityContext';
 import { ThemeContext } from '../Context/ThemeContext';
@@ -27,11 +27,7 @@ export default function Activity({ navigation }) {
 
   return (
     <View style={[styles.screen, { backgroundColor: theme.background }]}>
-      {activities.length ? (
-        <ItemsList data={activities} />
-      ) : (
-        <Text style={{ color: theme.text }}>No activities yet</Text>
-      )}
+        <ItemsList items={activities} />
     </View>
   );
 }

@@ -5,8 +5,8 @@ export const ActivityContext = createContext();
 export const ActivityProvider = ({ children }) => {
   const [activities, setActivities] = useState([]);
 
-  const addActivity = (activity) => {
-    setActivities((prev) => [...prev, activity]);
+  const addActivity = (newActivity) => {
+    setActivities((prevActivities) => [...prevActivities, newActivity]);
   };
 
   return (

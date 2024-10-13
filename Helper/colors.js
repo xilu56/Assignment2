@@ -7,7 +7,7 @@ const colors = {
       black: '#000000',       // Default black
       background: '#A49FC4',  // Light lavender (for background)
       Button: '#0000FF',       // Default Blue 
-      gray: '#A9A9A9',        // Default gray for unselected tab icons
+      gray: '#D3D3D3',        // Default gray for unselected tab icons
       text: '#E5E5E5',        // Light white (for text inside the dark areas)
     },
     darkTheme: {
@@ -18,7 +18,7 @@ const colors = {
       black: '#000000',       // Default black
       background: '#2C2A4A',  // Dark purple (for dark mode background)
       Button: '#0000FF',       // Default Blue
-      gray: '#A9A9A9',        // Default gray for unselected tab icons
+      gray: '#D3D3D3',        // Default gray for unselected tab icons
       text: '#E5E5E5',        // Light white (for text)
     },
   };
