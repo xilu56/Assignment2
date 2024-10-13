@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import { View, Text, Button } from 'react-native';
 import { ThemeContext } from '../Context/ThemeContext';
-import colors from '../Helper/colors';
 
 export default function Settings() {
   const { theme, toggleTheme } = useContext(ThemeContext);

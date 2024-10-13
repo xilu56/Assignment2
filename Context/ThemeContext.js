@@ -1,9 +1,10 @@
 import React, { createContext, useState, useMemo } from 'react';
-import colors from '../Helper/colors';
+import getColors from '../Helper/colors';
 
 export const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
+export default function ThemeProvider({ children }) {
+  const colors = getColors();
   const [theme, setTheme] = useState(colors.lightTheme);
 
   const toggleTheme = () => {

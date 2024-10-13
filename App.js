@@ -5,20 +5,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 
-import Activity from './Screens/Activity';
-import Diet from './Screens/Diet';
-import AddAnActivity from './Screens/AddAnActivity';
-import AddADiet from './Screens/AddADiet';
-import Settings from './Screens/Settings';
+import Activity from './Screens/activity';
+import Diet from './Screens/diet';
+import AddAnActivity from './Screens/addanactivity';
+import AddADiet from './Screens/addadiet';
+import Settings from './Screens/settings';
 
 import { ActivityProvider } from './Context/ActivityContext';
 import { DietProvider } from './Context/DietContext';
-import { ThemeProvider, ThemeContext } from './Context/ThemeContext';
+import ThemeProvider, { ThemeContext } from './Context/ThemeContext'; // Updated the import for ThemeProvider
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const DietStack = () => {
+function DietStack() {
   const { theme } = useContext(ThemeContext);
   return (
     <Stack.Navigator
@@ -36,9 +36,9 @@ const DietStack = () => {
       <Stack.Screen name="AddADiet" component={AddADiet} options={{ title: 'Add A Diet' }} />
     </Stack.Navigator>
   );
-};
+}
 
-const ActivitiesStack = () => {
+function ActivitiesStack() {
   const { theme } = useContext(ThemeContext);
   return (
     <Stack.Navigator
@@ -56,9 +56,9 @@ const ActivitiesStack = () => {
       <Stack.Screen name="AddActivity" component={AddAnActivity} options={{ title: 'Add An Activity' }} />
     </Stack.Navigator>
   );
-};
+}
 
-const SettingsStack = () => {
+function SettingsStack() {
   const { theme } = useContext(ThemeContext);
   return (
     <Stack.Navigator
@@ -75,9 +75,9 @@ const SettingsStack = () => {
       <Stack.Screen name="SettingsScreen" component={Settings} options={{ title: 'Settings' }} />
     </Stack.Navigator>
   );
-};
+}
 
-const TabNavigator = () => {
+function TabNavigator() {
   const { theme } = useContext(ThemeContext);
   return (
     <Tab.Navigator
@@ -106,9 +106,9 @@ const TabNavigator = () => {
       <Tab.Screen name="SettingsTab" component={SettingsStack} options={{ title: 'Settings' }} />
     </Tab.Navigator>
   );
-};
+}
 
-const App = () => {
+export default function App() {
   return (
     <ThemeProvider>
       <ActivityProvider>
@@ -120,6 +120,4 @@ const App = () => {
       </ActivityProvider>
     </ThemeProvider>
   );
-};
-
-export default App;
+}
