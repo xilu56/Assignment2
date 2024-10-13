@@ -6,6 +6,7 @@ const colors = {
       white: '#FFFFFF',       // Default white
       black: '#000000',       // Default black
       background: '#A49FC4',  // Light lavender (for background)
+      Button: '#0000FF',       // Default Blue 
       gray: '#A9A9A9',        // Default gray for unselected tab icons
       text: '#E5E5E5',        // Light white (for text inside the dark areas)
     },
@@ -16,6 +17,7 @@ const colors = {
       white: '#E5E5E5',       // Light white for text
       black: '#000000',       // Default black
       background: '#2C2A4A',  // Dark purple (for dark mode background)
+      Button: '#0000FF',       // Default Blue
       gray: '#A9A9A9',        // Default gray for unselected tab icons
       text: '#E5E5E5',        // Light white (for text)
     },
