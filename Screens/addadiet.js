@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableWithoutFeedb
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DietContext } from '../Context/DietContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { commonStyles } from '../Helper/styles';
 
 export default function AddADiet({ navigation }) {
   const { addDietEntry } = useContext(DietContext); // Use context to add new diet entry
@@ -50,29 +51,29 @@ export default function AddADiet({ navigation }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.label, { color: theme.text }]}>Description *</Text>
+    <View style={[commonStyles.container, { backgroundColor: theme.background }]}>
+      <Text style={[commonStyles.label, { color: theme.text }]}>Description *</Text>
       <TextInput
-        style={[styles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
+        style={[commonStyles.largeInput, { borderColor: theme.primary, backgroundColor: theme.gray }]}
         value={description}
         onChangeText={setDescription}
         placeholder="Enter diet description"
       />
 
-      <Text style={[styles.label, { color: theme.text }]}>Calories (kcal) *</Text>
+      <Text style={[commonStyles.label, { color: theme.text }]}>Calories (kcal) *</Text>
       <TextInput
-        style={[styles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
+        style={[commonStyles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
         keyboardType="numeric"
         value={calories}
         onChangeText={setCalories}
         placeholder="Enter calories"
       />
 
-      <Text style={[styles.label, { color: theme.text }]}>Date *</Text>
+      <Text style={[commonStyles.label, { color: theme.text }]}>Date *</Text>
       <TouchableWithoutFeedback onPress={toggleDatePicker}>
         <View>
           <TextInput
-            style={[styles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
+            style={[commonStyles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
             value={date ? date.toDateString() : ''}
             editable={false}
             pointerEvents="none"
@@ -87,40 +88,14 @@ export default function AddADiet({ navigation }) {
           mode="date"
           display="inline"
           onChange={onChangeDate}
-          style={styles.datePicker}
+          style={commonStyles.datePicker}
         />
       )}
 
-      <View style={styles.buttonContainer}>
+      <View style={commonStyles.buttonContainer}>
         <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.Button} />
         <Button title="Save" onPress={handleSave} color={theme.Button} />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 18,
-  },
-  label: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  datePicker: {
-    width: '100%',
-    transform: [{ scale: 0.7 }],
-  },
-});

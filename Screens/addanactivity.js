@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { ActivityContext } from '../Context/ActivityContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { commonStyles } from '../Helper/styles';
 
 export default function AddAnActivity({ navigation }) {
   const { addActivity } = useContext(ActivityContext); // Use context to add new activity
@@ -70,8 +71,8 @@ export default function AddAnActivity({ navigation }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <Text style={[styles.label, { color: theme.text }]}>Activity *</Text>
+    <View style={[commonStyles.container, { backgroundColor: theme.background }]}>
+      <Text style={[commonStyles.label, { color: theme.text }]}>Activity *</Text>
       <DropDownPicker
         open={open}
         value={activityType}
@@ -81,7 +82,7 @@ export default function AddAnActivity({ navigation }) {
         setItems={setItems}
         placeholder="Select An Activity"
         style={[
-          styles.dropdown, 
+            commonStyles.dropdown, 
           { 
             borderColor: theme.primary, 
             backgroundColor: open ? theme.white : theme.gray 
@@ -92,19 +93,19 @@ export default function AddAnActivity({ navigation }) {
         }}
       />
 
-      <Text style={[styles.label, { color: theme.text }]}>Duration (min) *</Text>
+      <Text style={[commonStyles.label, { color: theme.text }]}>Duration (min) *</Text>
       <TextInput
-        style={[styles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
+        style={[commonStyles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
         keyboardType="numeric"
         value={duration}
         onChangeText={setDuration}
       />
 
-      <Text style={[styles.label, { color: theme.text }]}>Date *</Text>
+      <Text style={[commonStyles.label, { color: theme.text }]}>Date *</Text>
       <TouchableWithoutFeedback onPress={toggleDatePicker}>
         <View>
           <TextInput
-            style={[styles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
+            style={[commonStyles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
             value={date ? date.toDateString() : ''}
             editable={false}
             pointerEvents="none"
@@ -119,43 +120,14 @@ export default function AddAnActivity({ navigation }) {
           mode="date"
           display="inline"
           onChange={onChangeDate}
-          style={styles.datePicker}
+          style={commonStyles.datePicker}
         />
       )}
 
-      <View style={styles.buttonContainer}>
+      <View style={commonStyles.buttonContainer}>
         <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.Button} />
         <Button title="Save" onPress={handleSave} color={theme.Button} />
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
-  },
-  dropdown: {
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  datePicker: {
-    width: '100%',
-    transform: [{ scale: 0.8 }],
-  },
-});
