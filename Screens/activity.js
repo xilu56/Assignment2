@@ -15,7 +15,7 @@ export default function Activity({ navigation }) {
           onPress={() => navigation.navigate('AddActivity')}
           style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]} // Change opacity when pressed
         >
-          <Text style={{ color: theme.Button, fontSize: 16, marginRight: 15 }}>Add</Text>
+          <Text style={{ color: theme.white, fontSize: 16, marginRight: 15 }}>Add</Text>
         </Pressable>
       ),
       headerStyle: {
