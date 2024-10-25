@@ -10,6 +10,7 @@ export default function getColors() {
         Button: '#0000FF',      // Default Blue 
         gray: '#D3D3D3',        // Default gray for unselected tab icons
         text: '#E5E5E5',        // Light white (for text inside the dark areas)
+        buttonText: '#FFFFFF',  // Default white (for button text)
       },
       darkTheme: {
         primary: '#3E3364',     // Deep purple (for header and bottom tab)
@@ -21,6 +22,7 @@ export default function getColors() {
         Button: '#0000FF',      // Default Blue
         gray: '#D3D3D3',        // Default gray for unselected tab icons
         text: '#E5E5E5',        // Light white (for text)
+        buttonText: '#FFFFFF',  // Default white (for button text
       },
     };
   }

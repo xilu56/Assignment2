@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableWithoutFeedback, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DietContext } from '../Context/DietContext';
 import { ThemeContext } from '../Context/ThemeContext';
 import { commonStyles } from '../Helper/styles';
 
 export default function AddADiet({ navigation }) {
-  const { addDietEntry } = useContext(DietContext); // Use context to add new diet entry
-  const { theme } = useContext(ThemeContext); // Assuming there's a theme context for styling
+  const { addDietEntry } = useContext(DietContext);
+  const { theme } = useContext(ThemeContext);
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
   const [date, setDate] = useState(null);
@@ -31,7 +31,7 @@ export default function AddADiet({ navigation }) {
 
     const isSpecial = parseFloat(calories) > 800;
     addDietEntry({
-      id: Math.random().toString(), // Unique identifier
+      id: Math.random().toString(),
       description,
       calories: `${calories} kcal`,
       date: date.toDateString(),
@@ -93,8 +93,19 @@ export default function AddADiet({ navigation }) {
       )}
 
       <View style={commonStyles.buttonContainer}>
-        <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.Button} />
-        <Button title="Save" onPress={handleSave} color={theme.Button} />
+        <Pressable onPress={() => navigation.goBack()} style={({ pressed }) => [
+          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
+          commonStyles.button
+        ]}>
+          <Text style={{ color: theme.buttonText }}>Cancel</Text>
+        </Pressable>
+
+        <Pressable onPress={handleSave} style={({ pressed }) => [
+          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
+          commonStyles.button
+        ]}>
+          <Text style={{ color: theme.buttonText }}>Save</Text>
+        </Pressable>
       </View>
     </View>
   );
