@@ -90,6 +90,7 @@ export default function AddAnActivity({ navigation }) {
         ]}
         dropDownContainerStyle={{
           borderColor: theme.primary,
+          maxHeight: 300,
         }}
       />
 
