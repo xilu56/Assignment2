@@ -10,12 +10,14 @@ import { commonStyles } from '../Helper/styles';
 export default function EditActivity({ route, navigation }) {
   const { id, name, date, value, special } = route.params.activity;
   const { theme } = useContext(ThemeContext);
+
   const [activityType, setActivityType] = useState(name);
   const [duration, setDuration] = useState(value.split(' ')[0]);
   const [activityDate, setActivityDate] = useState(new Date(date));
   const [isSpecial, setIsSpecial] = useState(special);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [open, setOpen] = useState(false);
+
   const [items, setItems] = useState([
     { label: 'Walking', value: 'Walking' },
     { label: 'Running', value: 'Running' },
@@ -25,6 +27,22 @@ export default function EditActivity({ route, navigation }) {
     { label: 'Cycling', value: 'Cycling' },
     { label: 'Hiking', value: 'Hiking' },
   ]);
+
+  const initialActivity = {
+    activityType: name,
+    duration: value.split(' ')[0],
+    activityDate: new Date(date),
+    isSpecial: special,
+  };
+
+  const hasChanges = () => {
+    return (
+      activityType !== initialActivity.activityType ||
+      duration !== initialActivity.duration ||
+      activityDate.toDateString() !== initialActivity.activityDate.toDateString() ||
+      isSpecial !== initialActivity.isSpecial
+    );
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -36,40 +54,65 @@ export default function EditActivity({ route, navigation }) {
     });
   }, [navigation]);
 
-  const handleSave = async () => {
-    if (!activityType || !duration || isNaN(duration) || parseFloat(duration) <= 0 || !activityDate) {
-      Alert.alert('Error', 'Please ensure all fields are valid.');
+  const handleSave = () => {
+    if (!hasChanges()) {
+      navigation.goBack();
       return;
     }
 
-    const updatedData = {
-      name: activityType,
-      date: activityDate.toDateString(),
-      value: `${duration} min`,
-      special: isSpecial,
-    };
+    Alert.alert(
+      "Important",
+      "Are you sure you want to save these changes?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            const updatedData = {
+              name: activityType,
+              date: activityDate.toDateString(),
+              value: `${duration} min`,
+              special: isSpecial,
+            };
 
-    try {
-      await updateDB(id, updatedData, 'activities');
-      Alert.alert('Success', 'Activity updated successfully.');
-      navigation.goBack();
-    } catch (error) {
-      Alert.alert('Error', 'Could not update activity. Please try again.');
-    }
+            try {
+              await updateDB(id, updatedData, 'activities');
+              navigation.goBack();
+            } catch (error) {
+              Alert.alert('Error', 'Could not update activity. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
-  const handleDelete = async () => {
-    try {
-      await deleteFromDB(id, 'activities');
-      Alert.alert('Deleted', 'Activity has been deleted.');
-      navigation.goBack();
-    } catch (error) {
-      Alert.alert('Error', 'Could not delete activity.');
-    }
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete",
+      "Are you sure you want to delete this item?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              await deleteFromDB(id, 'activities');
+              Alert.alert('Deleted', 'Activity has been deleted.');
+              navigation.goBack();
+            } catch (error) {
+              Alert.alert('Error', 'Could not delete activity.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const onChangeDate = (event, selectedDate) => {
-    setActivityDate(selectedDate || activityDate);
+    if (selectedDate) {
+      setActivityDate(selectedDate);
+    }
     setShowDatePicker(false);
   };
 
@@ -122,12 +165,16 @@ export default function EditActivity({ route, navigation }) {
         />
       )}
 
-      <View style={commonStyles.checkboxContainer}>
-        <Text style={[commonStyles.label, { color: theme.text }]}>Mark as Special</Text>
-        <Pressable onPress={() => setIsSpecial(!isSpecial)}>
-          <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
-        </Pressable>
-      </View>
+      {special && (
+        <View style={commonStyles.checkboxContainer}>
+          <Text style={[commonStyles.label, { color: theme.text }]}>
+            This item is marked as special. Select the checkbox if you would like to approve it.
+          </Text>
+          <Pressable onPress={() => setIsSpecial(!isSpecial)}>
+            <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
+          </Pressable>
+        </View>
+      )}
 
       <View style={commonStyles.buttonContainer}>
         <Pressable onPress={() => navigation.goBack()} style={({ pressed }) => [
