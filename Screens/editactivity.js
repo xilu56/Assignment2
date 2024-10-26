@@ -98,7 +98,6 @@ export default function EditActivity({ route, navigation }) {
           onPress: async () => {
             try {
               await deleteFromDB(id, 'activities');
-              Alert.alert('Deleted', 'Activity has been deleted.');
               navigation.goBack();
             } catch (error) {
               Alert.alert('Error', 'Could not delete activity.');
@@ -167,8 +166,7 @@ export default function EditActivity({ route, navigation }) {
 
       {special && (
         <View style={commonStyles.checkboxContainer}>
-          <Text style={[commonStyles.label, { color: theme.text }]}>
-            This item is marked as special. Select the checkbox if you would like to approve it.
+          <Text style={[commonStyles.label, { color: theme.text }]}>This item is marked as special. Select the checkbox if you would like to approve it.
           </Text>
           <Pressable onPress={() => setIsSpecial(!isSpecial)}>
             <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />

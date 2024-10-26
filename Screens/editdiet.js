@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Alert, TouchableWithoutFeedback, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ThemeContext } from '../Context/ThemeContext';
@@ -17,8 +17,23 @@ export default function EditDiet({ route, navigation }) {
   const [isSpecial, setIsSpecial] = useState(special);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Set up header options with delete icon
-  React.useEffect(() => {
+  const initialDiet = {
+    dietDescription: description,
+    dietCalories: calories.replace(' kcal', ''),
+    dietDate: new Date(date),
+    isSpecial: special,
+  };
+
+  const hasChanges = () => {
+    return (
+      dietDescription !== initialDiet.dietDescription ||
+      dietCalories !== initialDiet.dietCalories ||
+      dietDate.toDateString() !== initialDiet.dietDate.toDateString() ||
+      isSpecial !== initialDiet.isSpecial
+    );
+  };
+
+  useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Pressable onPress={handleDelete}>
@@ -28,55 +43,65 @@ export default function EditDiet({ route, navigation }) {
     });
   }, [navigation]);
 
-  const handleSave = async () => {
-    // Input validation
-    if (!dietDescription.trim()) {
-      Alert.alert('Error', 'Please provide a description.');
-      return;
-    }
-
-    const calorieValue = parseFloat(dietCalories);
-    if (!dietCalories || isNaN(calorieValue) || calorieValue <= 0) {
-      Alert.alert('Error', 'Please enter a valid calorie amount greater than 0.');
-      return;
-    }
-
-    if (!dietDate) {
-      Alert.alert('Error', 'Please select a date.');
-      return;
-    }
-
-    const updatedData = {
-      description: dietDescription.trim(),
-      calories: `${calorieValue} kcal`,
-      date: dietDate.toDateString(),
-      special: isSpecial,
-    };
-
-    try {
-      await updateDB(id, updatedData, 'diet');
-      Alert.alert('Success', 'Diet entry updated successfully.');
+  const handleSave = () => {
+    if (!hasChanges()) {
       navigation.goBack();
-    } catch (error) {
-      Alert.alert('Error', 'Could not update diet entry. Please try again.');
+      return;
     }
+
+    Alert.alert(
+      "Important",
+      "Are you sure you want to save these changes?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            const updatedData = {
+              name: dietDescription,
+              date: dietDate,
+              value: `${dietCalories} kcal`,
+              special: isSpecial,
+            };
+
+            try {
+              await updateDB(id, updatedData, 'diet');
+              navigation.goBack();
+            } catch (error) {
+              Alert.alert('Error', 'Could not update diet. Please try again.');
+            }
+          },
+        },
+      ]
+    );
   };
 
-  const handleDelete = async () => {
-    try {
-      await deleteFromDB(id, 'diet');
-      Alert.alert('Deleted', 'Diet entry has been deleted.');
-      navigation.goBack();
-    } catch (error) {
-      Alert.alert('Error', 'Could not delete diet entry.');
-    }
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete",
+      "Are you sure you want to delete this item?",
+      [
+        { text: "No", style: "cancel" },
+        {
+          text: "Yes",
+          onPress: async () => {
+            try {
+              await deleteFromDB(id, 'diet');
+              navigation.goBack();
+            } catch (error) {
+              Alert.alert('Error', 'Could not delete diet.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const onChangeDate = (event, selectedDate) => {
-    setShowDatePicker(false);
     if (selectedDate) {
       setDietDate(selectedDate);
     }
+    setShowDatePicker(false);
   };
 
   const toggleDatePicker = () => setShowDatePicker(prev => !prev);
@@ -123,12 +148,16 @@ export default function EditDiet({ route, navigation }) {
         />
       )}
 
-      <View style={commonStyles.checkboxContainer}>
-        <Text style={[commonStyles.label, { color: theme.text }]}>Mark as Special</Text>
-        <Pressable onPress={() => setIsSpecial(!isSpecial)}>
-          <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
-        </Pressable>
-      </View>
+      {special && (
+        <View style={commonStyles.checkboxContainer}>
+          <Text style={[commonStyles.label, { color: theme.text }]}>
+            This item is marked as special. Select the checkbox if you would like to approve it.
+          </Text>
+          <Pressable onPress={() => setIsSpecial(!isSpecial)}>
+            <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
+          </Pressable>
+        </View>
+      )}
 
       <View style={commonStyles.buttonContainer}>
         <Pressable onPress={() => navigation.goBack()} style={({ pressed }) => [
