@@ -11,11 +11,13 @@ export default function EditDiet({ route, navigation }) {
   // Retrieve diet entry data from route params
   const { id, description, calories, date, special } = route.params.dietEntry;
   const { theme } = useContext(ThemeContext);
+  const item = route.params?.item;
 
   const [dietDescription, setDietDescription] = useState(description);
   const [dietCalories, setDietCalories] = useState(calories.replace(' kcal', ''));
   const [dietDate, setDietDate] = useState(new Date(date));
-  const [isSpecial, setIsSpecial] = useState(special);
+  const [isSpecial, setIsSpecial] = useState(item?.special || false);
+  const [isChecked, setIsChecked] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const initialDiet = {
@@ -62,7 +64,7 @@ export default function EditDiet({ route, navigation }) {
               name: dietDescription,
               date: dietDate,
               value: `${dietCalories} kcal`,
-              special: isSpecial,
+              special: isChecked ? false : isSpecial,
             };
 
             try {
@@ -151,11 +153,13 @@ export default function EditDiet({ route, navigation }) {
 
       {special && (
         <View style={commonStyles.checkboxContainer}>
-          <Text style={[commonStyles.label, { color: theme.text }]}>
-            This item is marked as special. Select the checkbox if you would like to approve it.
+          <Text style={[commonStyles.label, { color: theme.text }]}>This item is marked as special. Select the checkbox if you would like to approve it.
           </Text>
-          <Pressable onPress={() => setIsSpecial(!isSpecial)}>
-            <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
+          <Pressable onPress={() => {
+            setIsChecked(!isChecked);
+            if (isChecked) setIsSpecial(false); // Only set to false if checked
+          }}>
+            <Ionicons name={isChecked ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
           </Pressable>
         </View>
       )}

@@ -11,11 +11,13 @@ import Button from '../Components/Button';
 export default function EditActivity({ route, navigation }) {
   const { id, name, date, value, special } = route.params.activity;
   const { theme } = useContext(ThemeContext);
+  const item = route.params?.item;
 
   const [activityType, setActivityType] = useState(name);
   const [duration, setDuration] = useState(value.split(' ')[0]);
   const [activityDate, setActivityDate] = useState(new Date(date));
-  const [isSpecial, setIsSpecial] = useState(special);
+  const [isSpecial, setIsSpecial] = useState(item?.special || false);
+  const [isChecked, setIsChecked] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -73,7 +75,7 @@ export default function EditActivity({ route, navigation }) {
               name: activityType,
               date: activityDate.toDateString(),
               value: `${duration} min`,
-              special: isSpecial,
+              special: isChecked ? false : isSpecial,
             };
 
             try {
@@ -169,8 +171,11 @@ export default function EditActivity({ route, navigation }) {
         <View style={commonStyles.checkboxContainer}>
           <Text style={[commonStyles.label, { color: theme.text }]}>This item is marked as special. Select the checkbox if you would like to approve it.
           </Text>
-          <Pressable onPress={() => setIsSpecial(!isSpecial)}>
-            <Ionicons name={isSpecial ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
+          <Pressable onPress={() => {
+            setIsChecked(!isChecked);
+            if (isChecked) setIsSpecial(false); // Only set to false if checked
+          }}>
+            <Ionicons name={isChecked ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
           </Pressable>
         </View>
       )}
