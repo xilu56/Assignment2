@@ -2,12 +2,11 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Alert, StyleSheet, TouchableWithoutFeedback, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { ActivityContext } from '../Context/ActivityContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { writeToDB } from '../Helper/firestoreHelper';
 import { commonStyles } from '../Helper/styles';
 
 export default function AddAnActivity({ navigation }) {
-  const { addActivity } = useContext(ActivityContext);
   const { theme } = useContext(ThemeContext);
   const [activityType, setActivityType] = useState(null);
   const [duration, setDuration] = useState('');
@@ -24,7 +23,7 @@ export default function AddAnActivity({ navigation }) {
     { label: 'Hiking', value: 'Hiking' },
   ]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!activityType) {
       Alert.alert('Error', 'Please select an activity.');
       return;
@@ -42,15 +41,22 @@ export default function AddAnActivity({ navigation }) {
 
     const isSpecial = (activityType === 'Running' || activityType === 'Weights') && parseFloat(duration) > 60;
 
-    addActivity({
-      id: Math.random().toString(),
-      name: activityType,
-      date: date.toDateString(),
-      value: `${duration} min`,
-      special: isSpecial,
-    });
-
-    navigation.goBack();
+    // Save the activity to Firestore
+    try {
+      await writeToDB(
+        {
+          name: activityType,
+          date: date.toDateString(),
+          value: `${duration} min`,
+          special: isSpecial,
+        },
+        'activities'
+      );
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Error', 'Could not save activity. Please try again.');
+      console.error("Firestore error: ", error);
+    }
   };
 
   const onChangeDate = (event, selectedDate) => {
@@ -76,15 +82,9 @@ export default function AddAnActivity({ navigation }) {
         placeholder="Select An Activity"
         style={[
           commonStyles.dropdown, 
-          { 
-            borderColor: theme.primary, 
-            backgroundColor: open ? theme.white : theme.gray 
-          }
+          { borderColor: theme.primary, backgroundColor: open ? theme.white : theme.gray }
         ]}
-        dropDownContainerStyle={{
-          borderColor: theme.primary,
-          maxHeight: 300,
-        }}
+        dropDownContainerStyle={{ borderColor: theme.primary, maxHeight: 300 }}
       />
 
       <Text style={[commonStyles.label, { color: theme.text }]}>Duration (min) *</Text>
