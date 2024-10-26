@@ -3,6 +3,7 @@ import { View, Text, Pressable, StyleSheet} from 'react-native';
 import ItemsList from '../Components/ItemsList';
 import { DietContext } from '../Context/DietContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Diet({ navigation }) {
   const { dietEntries } = useContext(DietContext);
@@ -11,12 +12,15 @@ export default function Diet({ navigation }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable 
-          onPress={() => navigation.navigate('AddADiet')}
-          style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]} // Change opacity when pressed
-        >
-          <Text style={{ color: theme.white, fontSize: 16, marginRight: 15 }}>Add</Text>
-        </Pressable>
+        <View style={{ flexDirection: 'row', marginRight: 15 }}>
+          <Pressable 
+            onPress={() => navigation.navigate('AddADiet')}
+            style={({ pressed }) => [{ opacity: pressed ? 0.5 : 1 }]}
+          >
+            <Ionicons name="add" size={24} color={theme.white} style={{ marginRight: 5 }} />
+          </Pressable>
+            <Ionicons name="pizza" size={24} color={theme.white} />
+        </View>
       ),
       headerStyle: {
         backgroundColor: theme.primary,
