@@ -5,6 +5,7 @@ import { ThemeContext } from '../Context/ThemeContext';
 import { updateDB, deleteFromDB } from '../Helper/firestoreHelper';
 import { Ionicons } from '@expo/vector-icons';
 import { commonStyles } from '../Helper/styles';
+import Button from '../Components/Button';
 
 export default function EditDiet({ route, navigation }) {
   // Retrieve diet entry data from route params
@@ -159,21 +160,10 @@ export default function EditDiet({ route, navigation }) {
         </View>
       )}
 
-      <View style={commonStyles.buttonContainer}>
-        <Pressable onPress={() => navigation.goBack()} style={({ pressed }) => [
-          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
-          commonStyles.button
-        ]}>
-          <Text style={{ color: theme.buttonText }}>Cancel</Text>
-        </Pressable>
-
-        <Pressable onPress={handleSave} style={({ pressed }) => [
-          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
-          commonStyles.button
-        ]}>
-          <Text style={{ color: theme.buttonText }}>Save</Text>
-        </Pressable>
-      </View>
+    <View style={commonStyles.buttonContainer}>
+      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+      <Button title="Save" onPress={handleSave} themeType={theme} />
+    </View>
     </View>
   );
 }

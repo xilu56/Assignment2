@@ -5,6 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { ThemeContext } from '../Context/ThemeContext';
 import { writeToDB } from '../Helper/firestoreHelper';
 import { commonStyles } from '../Helper/styles';
+import Button from '../Components/Button';
 
 export default function AddAnActivity({ navigation }) {
   const { theme } = useContext(ThemeContext);
@@ -118,21 +119,10 @@ export default function AddAnActivity({ navigation }) {
         />
       )}
 
-      <View style={commonStyles.buttonContainer}>
-        <Pressable onPress={() => navigation.goBack()} style={({ pressed }) => [
-          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
-          commonStyles.button
-        ]}>
-          <Text style={{ color: theme.buttonText }}>Cancel</Text>
-        </Pressable>
-
-        <Pressable onPress={handleSave} style={({ pressed }) => [
-          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
-          commonStyles.button
-        ]}>
-          <Text style={{ color: theme.buttonText }}>Save</Text>
-        </Pressable>
-      </View>
+    <View style={commonStyles.buttonContainer}>
+      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+      <Button title="Save" onPress={handleSave} themeType={theme} />
+    </View>
     </View>
   );
 }

@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { ThemeContext } from '../Context/ThemeContext';
 import { writeToDB } from '../Helper/firestoreHelper';
 import { commonStyles } from '../Helper/styles';
+import Button from '../Components/Button';
 
 export default function AddADiet({ navigation }) {
   const { theme } = useContext(ThemeContext);
@@ -99,22 +100,10 @@ export default function AddADiet({ navigation }) {
           style={commonStyles.datePicker}
         />
       )}
-
       <View style={commonStyles.buttonContainer}>
-        <Pressable onPress={() => navigation.goBack()} style={({ pressed }) => [
-          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
-          commonStyles.button
-        ]}>
-          <Text style={{ color: theme.buttonText }}>Cancel</Text>
-        </Pressable>
-
-        <Pressable onPress={handleSave} style={({ pressed }) => [
-          { backgroundColor: pressed ? theme.primary : theme.buttonBackground },
-          commonStyles.button
-        ]}>
-          <Text style={{ color: theme.buttonText }}>Save</Text>
-        </Pressable>
-      </View>
+      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+      <Button title="Save" onPress={handleSave} themeType={theme} />
+    </View>
     </View>
   );
 }
