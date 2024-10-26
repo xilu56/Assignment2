@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Pressable } from 'react-native';
 import { ThemeContext } from '../Context/ThemeContext';
 import Item from './Item';
 
-export default function ItemsList({ items }) {
+export default function ItemsList({ items, onItemPress }) {
   const { theme } = useContext(ThemeContext);
 
   return (
@@ -11,7 +11,11 @@ export default function ItemsList({ items }) {
       <FlatList
         data={items}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <Item item={item} theme={theme} />}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => onItemPress(item)}>
+            <Item item={item} theme={theme} />
+          </Pressable>
+        )}
       />
     </View>
   );

@@ -32,9 +32,13 @@ export default function Activity({ navigation }) {
     });
   }, [navigation, theme]);
 
+  const handleItemPress = (activity) => {
+    navigation.navigate('EditActivity', { activity });
+  };
+
   return (
     <View style={[styles.screen, { backgroundColor: theme.background }]}>
-      <ItemsList items={activities} />
+      <ItemsList items={activities} onItemPress={handleItemPress} />
     </View>
   );
 }

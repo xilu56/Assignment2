@@ -8,11 +8,13 @@ import Activity from './Screens/activity';
 import Diet from './Screens/diet';
 import AddAnActivity from './Screens/addanactivity';
 import AddADiet from './Screens/addadiet';
+import EditActivity from './Screens/editactivity';
+import EditDiet from './Screens/editdiet';
 import Settings from './Screens/settings';
 
 import { ActivityProvider } from './Context/ActivityContext';
 import { DietProvider } from './Context/DietContext';
-import ThemeProvider, { ThemeContext } from './Context/ThemeContext'; // Updated the import for ThemeProvider
+import ThemeProvider, { ThemeContext } from './Context/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -33,6 +35,7 @@ function DietStack() {
     >
       <Stack.Screen name="DietScreen" component={Diet} options={{ title: 'Diet' }} />
       <Stack.Screen name="AddADiet" component={AddADiet} options={{ title: 'Add A Diet' }} />
+      <Stack.Screen name="EditDiet" component={EditDiet} options={{ title: 'Edit' }} />
     </Stack.Navigator>
   );
 }
@@ -53,6 +56,7 @@ function ActivitiesStack() {
     >
       <Stack.Screen name="ActivitiesScreen" component={Activity} options={{ title: 'Activities' }} />
       <Stack.Screen name="AddActivity" component={AddAnActivity} options={{ title: 'Add An Activity' }} />
+      <Stack.Screen name="EditActivity" component={EditActivity} options={{ title: 'Edit' }} />
     </Stack.Navigator>
   );
 }

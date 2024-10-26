@@ -32,9 +32,13 @@ export default function Diet({ navigation }) {
     });
   }, [navigation, theme]);
 
+  const handleItemPress = (dietEntry) => {
+    navigation.navigate('EditDiet', { dietEntry });
+  };
+
   return (
     <View style={[styles.screen, { backgroundColor: theme.background }]}>
-      <ItemsList items={dietEntries} />
+      <ItemsList items={dietEntries} onItemPress={handleItemPress} />
     </View>
   );
 }
