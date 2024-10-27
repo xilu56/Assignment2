@@ -58,6 +58,21 @@ export default function EditActivity({ route, navigation }) {
   }, [navigation]);
 
   const handleSave = () => {
+    if (!activityType) {
+      Alert.alert('Error', 'Please select an activity.');
+      return;
+    }
+
+    if (duration === '' || isNaN(duration) || parseFloat(duration) <= 0) {
+      Alert.alert('Error', 'Please enter a valid numeric duration greater than 0.');
+      return;
+    }
+
+    if (!date) {
+      Alert.alert('Error', 'Please select a date.');
+      return;
+    }
+    
     if (!hasChanges()) {
       navigation.goBack();
       return;

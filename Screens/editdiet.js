@@ -47,6 +47,21 @@ export default function EditDiet({ route, navigation }) {
   }, [navigation]);
 
   const handleSave = () => {
+    if (!dietDescription.trim()) {
+      Alert.alert('Error', 'Please provide a description.');
+      return;
+    }
+
+    if (dietCalories === '' || isNaN(dietCalories) || parseFloat(dietCalories) <= 0) {
+      Alert.alert('Error', 'Please enter a valid numeric calorie value greater than 0.');
+      return;
+    }
+
+    if (!dietDate) {
+      Alert.alert('Error', 'Please select a date.');
+      return;
+    }
+
     if (!hasChanges()) {
       navigation.goBack();
       return;
@@ -62,7 +77,7 @@ export default function EditDiet({ route, navigation }) {
           onPress: async () => {
             const updatedData = {
               name: dietDescription,
-              date: dietDate,
+              date: dietDate.toDateString(),
               value: `${dietCalories} kcal`,
               special: isChecked ? false : isSpecial,
             };
@@ -164,10 +179,10 @@ export default function EditDiet({ route, navigation }) {
         </View>
       )}
 
-    <View style={commonStyles.buttonContainer}>
-      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
-      <Button title="Save" onPress={handleSave} themeType={theme} />
-    </View>
+      <View style={commonStyles.buttonContainer}>
+        <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+        <Button title="Save" onPress={handleSave} themeType={theme} />
+      </View>
     </View>
   );
 }
