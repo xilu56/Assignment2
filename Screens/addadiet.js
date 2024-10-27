@@ -1,19 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableWithoutFeedback, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { DietContext } from '../Context/DietContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { writeToDB } from '../Helper/firestoreHelper';
 import { commonStyles } from '../Helper/styles';
+import Button from '../Components/Button';
 
 export default function AddADiet({ navigation }) {
-  const { addDietEntry } = useContext(DietContext); // Use context to add new diet entry
-  const { theme } = useContext(ThemeContext); // Assuming there's a theme context for styling
+  const { theme } = useContext(ThemeContext);
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
   const [date, setDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!description) {
       Alert.alert('Error', 'Please provide a description.');
       return;
@@ -30,14 +30,23 @@ export default function AddADiet({ navigation }) {
     }
 
     const isSpecial = parseFloat(calories) > 800;
-    addDietEntry({
-      id: Math.random().toString(), // Unique identifier
-      description,
-      calories: `${calories} kcal`,
-      date: date.toDateString(),
-      special: isSpecial,
-    });
-    navigation.goBack();
+
+    // Save the diet entry to Firestore
+    try {
+      await writeToDB(
+        {
+          description,
+          calories: `${calories} kcal`,
+          date: date.toDateString(),
+          special: isSpecial,
+        },
+        'diet'
+      );
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Error', 'Could not save diet entry. Please try again.');
+      console.error("Firestore error: ", error);
+    }
   };
 
   const onChangeDate = (event, selectedDate) => {
@@ -91,11 +100,10 @@ export default function AddADiet({ navigation }) {
           style={commonStyles.datePicker}
         />
       )}
-
       <View style={commonStyles.buttonContainer}>
-        <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.Button} />
-        <Button title="Save" onPress={handleSave} color={theme.Button} />
-      </View>
+      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+      <Button title="Save" onPress={handleSave} themeType={theme} />
+    </View>
     </View>
   );
 }

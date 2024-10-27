@@ -1,17 +1,30 @@
 import React, { useContext } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Pressable } from 'react-native';
 import { ThemeContext } from '../Context/ThemeContext';
 import Item from './Item';
 
-export default function ItemsList({ items }) {
+export default function ItemsList({ items, onItemPress }) {
   const { theme } = useContext(ThemeContext);
+
+  const formattedItems = items.map(item => ({
+    ...item,
+    date: item.date instanceof Date
+      ? item.date.toDateString()
+      : item.date && item.date.seconds
+      ? new Date(item.date.seconds * 1000).toDateString()
+      : item.date,
+  }));
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={items}
+        data={formattedItems}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <Item item={item} theme={theme} />}
+        renderItem={({ item }) => (
+          <Pressable onPress={() => onItemPress(item)}>
+            <Item item={item} theme={theme} />
+          </Pressable>
+        )}
       />
     </View>
   );

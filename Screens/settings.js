@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import { ThemeContext } from '../Context/ThemeContext';
 
 export default function Settings() {
@@ -14,7 +14,18 @@ export default function Settings() {
         backgroundColor: theme.background,
       }}
     >
-      <Button title="Toggle Theme" onPress={toggleTheme} />
+      <Pressable 
+        onPress={toggleTheme}
+        style={({ pressed }) => [
+          {
+            backgroundColor: pressed ? theme.primary : theme.Button,
+            padding: 10,
+            borderRadius: 5,
+          }
+        ]}
+      >
+        <Text style={{ color: theme.buttonText, fontSize: 16 }}>Toggle Theme</Text>
+      </Pressable>
     </View>
   );
 }

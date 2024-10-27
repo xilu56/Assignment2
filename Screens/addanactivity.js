@@ -1,14 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Alert, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet, TouchableWithoutFeedback, Pressable } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { ActivityContext } from '../Context/ActivityContext';
 import { ThemeContext } from '../Context/ThemeContext';
+import { writeToDB } from '../Helper/firestoreHelper';
 import { commonStyles } from '../Helper/styles';
+import Button from '../Components/Button';
 
 export default function AddAnActivity({ navigation }) {
-  const { addActivity } = useContext(ActivityContext); // Use context to add new activity
-  const { theme } = useContext(ThemeContext); // Assume there's a theme context for styling
+  const { theme } = useContext(ThemeContext);
   const [activityType, setActivityType] = useState(null);
   const [duration, setDuration] = useState('');
   const [date, setDate] = useState(null);
@@ -24,40 +24,40 @@ export default function AddAnActivity({ navigation }) {
     { label: 'Hiking', value: 'Hiking' },
   ]);
 
-  // Validate and save the new entry
-  const handleSave = () => {
-    // Check if activity type is selected
+  const handleSave = async () => {
     if (!activityType) {
       Alert.alert('Error', 'Please select an activity.');
       return;
     }
 
-    // Check if duration is valid: should be a positive number and not empty
     if (duration === '' || isNaN(duration) || parseFloat(duration) <= 0) {
       Alert.alert('Error', 'Please enter a valid numeric duration greater than 0.');
       return;
     }
 
-    // Check if date is selected
     if (!date) {
       Alert.alert('Error', 'Please select a date.');
       return;
     }
 
-    // If all validation passes, proceed to add the activity
     const isSpecial = (activityType === 'Running' || activityType === 'Weights') && parseFloat(duration) > 60;
 
-    // Add the new activity entry using the context
-    addActivity({
-      id: Math.random().toString(), // unique identifier
-      name: activityType, // activity type
-      date: date.toDateString(), // formatted date
-      value: `${duration} min`, // duration in minutes
-      special: isSpecial, // marks activity as special if conditions met
-    });
-
-    // After saving, go back to the previous screen (specific tab)
-    navigation.goBack();
+    // Save the activity to Firestore
+    try {
+      await writeToDB(
+        {
+          name: activityType,
+          date: date.toDateString(),
+          value: `${duration} min`,
+          special: isSpecial,
+        },
+        'activities'
+      );
+      navigation.goBack();
+    } catch (error) {
+      Alert.alert('Error', 'Could not save activity. Please try again.');
+      console.error("Firestore error: ", error);
+    }
   };
 
   const onChangeDate = (event, selectedDate) => {
@@ -82,16 +82,10 @@ export default function AddAnActivity({ navigation }) {
         setItems={setItems}
         placeholder="Select An Activity"
         style={[
-            commonStyles.dropdown, 
-          { 
-            borderColor: theme.primary, 
-            backgroundColor: open ? theme.white : theme.gray 
-          }
+          commonStyles.dropdown, 
+          { borderColor: theme.primary, backgroundColor: open ? theme.white : theme.gray }
         ]}
-        dropDownContainerStyle={{
-          borderColor: theme.primary,
-          maxHeight: 300,
-        }}
+        dropDownContainerStyle={{ borderColor: theme.primary, maxHeight: 300 }}
       />
 
       <Text style={[commonStyles.label, { color: theme.text }]}>Duration (min) *</Text>
@@ -125,10 +119,10 @@ export default function AddAnActivity({ navigation }) {
         />
       )}
 
-      <View style={commonStyles.buttonContainer}>
-        <Button title="Cancel" onPress={() => navigation.goBack()} color={theme.Button} />
-        <Button title="Save" onPress={handleSave} color={theme.Button} />
-      </View>
+    <View style={commonStyles.buttonContainer}>
+      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+      <Button title="Save" onPress={handleSave} themeType={theme} />
+    </View>
     </View>
   );
 }
