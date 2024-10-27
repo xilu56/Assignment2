@@ -8,7 +8,6 @@ import { commonStyles } from '../Helper/styles';
 import Button from '../Components/Button';
 
 export default function EditDiet({ route, navigation }) {
-  // Retrieve diet entry data from route params
   const { id, description, calories, date, special } = route.params.dietEntry;
   const { theme } = useContext(ThemeContext);
   const item = route.params?.item;
@@ -46,6 +45,21 @@ export default function EditDiet({ route, navigation }) {
     });
   }, [navigation]);
 
+  const handleDescriptionChange = (text) => {
+    setDietDescription(text);
+  }
+
+  const handleCaloriesChange = (text) => {
+    setDietCalories(text);
+    const calorieCount = parseFloat(text);
+    if (calorieCount > 800) {
+      setIsSpecial(true);
+    } else if (!isChecked) {
+      setIsSpecial(false);
+    }
+
+  };
+
   const handleSave = () => {
     if (!dietDescription.trim()) {
       Alert.alert('Error', 'Please provide a description.');
@@ -76,10 +90,10 @@ export default function EditDiet({ route, navigation }) {
           text: "Yes",
           onPress: async () => {
             const updatedData = {
-              name: dietDescription,
+              description: dietDescription,
               date: dietDate.toDateString(),
-              value: `${dietCalories} kcal`,
-              special: isChecked ? false : isSpecial,
+              calories: `${dietCalories} kcal`,
+              special: isChecked ? false : isSpecial, // Use updated special status
             };
 
             try {
@@ -122,7 +136,7 @@ export default function EditDiet({ route, navigation }) {
     setShowDatePicker(false);
   };
 
-  const toggleDatePicker = () => setShowDatePicker(prev => !prev);
+  const toggleDatePicker = () => setShowDatePicker((prev) => !prev);
 
   return (
     <View style={[commonStyles.container, { backgroundColor: theme.background }]}>
@@ -130,7 +144,7 @@ export default function EditDiet({ route, navigation }) {
       <TextInput
         style={[commonStyles.largeInput, { borderColor: theme.primary, backgroundColor: theme.gray }]}
         value={dietDescription}
-        onChangeText={setDietDescription}
+        onChangeText={handleDescriptionChange}
         placeholder="Enter diet description"
       />
 
@@ -139,7 +153,7 @@ export default function EditDiet({ route, navigation }) {
         style={[commonStyles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
         keyboardType="numeric"
         value={dietCalories}
-        onChangeText={setDietCalories}
+        onChangeText={handleCaloriesChange}
         placeholder="Enter calories"
       />
 
@@ -168,12 +182,15 @@ export default function EditDiet({ route, navigation }) {
 
       {special && (
         <View style={commonStyles.checkboxContainer}>
-          <Text style={[commonStyles.label, { color: theme.text }]}>This item is marked as special. Select the checkbox if you would like to approve it.
+          <Text style={[commonStyles.label, { color: theme.text }]}>
+            This item is marked as special. Select the checkbox if you would like to approve it.
           </Text>
-          <Pressable onPress={() => {
-            setIsChecked(!isChecked);
-            if (isChecked) setIsSpecial(false); // Only set to false if checked
-          }}>
+          <Pressable
+            onPress={() => {
+              setIsChecked(!isChecked);
+              if (isChecked) setIsSpecial(false); // Only set to false if checked
+            }}
+          >
             <Ionicons name={isChecked ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
           </Pressable>
         </View>
