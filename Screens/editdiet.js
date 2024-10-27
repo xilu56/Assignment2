@@ -60,6 +60,15 @@ export default function EditDiet({ route, navigation }) {
 
   };
 
+  useEffect(() => {
+    const calories = parseFloat(dietCalories);
+    if (calories > 800) {
+      setIsSpecial(true);
+    } else {
+      setIsSpecial(false);
+    }
+  }, [dietCalories]);
+
   const handleSave = () => {
     if (!dietDescription.trim()) {
       Alert.alert('Error', 'Please provide a description.');
@@ -180,17 +189,19 @@ export default function EditDiet({ route, navigation }) {
         />
       )}
 
-      {special && (
+{special && (
         <View style={commonStyles.checkboxContainer}>
           <Text style={[commonStyles.label, { color: theme.text }]}>
             This item is marked as special. Select the checkbox if you would like to approve it.
           </Text>
-          <Pressable
-            onPress={() => {
-              setIsChecked(!isChecked);
-              if (isChecked) setIsSpecial(false); // Only set to false if checked
-            }}
-          >
+          <Pressable onPress={() => {
+            setIsChecked((prevChecked) => {
+              const newChecked = !prevChecked;
+              setIsSpecial(!newChecked);
+              return newChecked;
+            }
+          )
+          }}>
             <Ionicons name={isChecked ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
           </Pressable>
         </View>
