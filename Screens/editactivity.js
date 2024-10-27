@@ -57,6 +57,28 @@ export default function EditActivity({ route, navigation }) {
     });
   }, [navigation]);
 
+  const handleDurationChange = (text) => {
+    setDuration(text);
+    const durationCount = parseFloat(text);
+
+    // Check if the activityType is either "Running" or "Weights" and duration is greater than 60
+    if ((activityType === 'Running' || activityType === 'Weights') && durationCount > 60) {
+      setIsSpecial(true);
+    } else if (!isChecked) {
+      setIsSpecial(false);
+    }
+  };
+
+  useEffect(() => {
+    const durationCount = parseFloat(duration);
+    
+    if ((activityType === 'Running' || activityType === 'Weights') && durationCount > 60) {
+      setIsSpecial(true);
+    } else {
+      setIsSpecial(false);
+    }
+  }, [activityType, duration]);  
+
   const handleSave = () => {
     if (!activityType) {
       Alert.alert('Error', 'Please select an activity.');
@@ -156,7 +178,7 @@ export default function EditActivity({ route, navigation }) {
         style={[commonStyles.input, { borderColor: theme.primary, backgroundColor: theme.gray }]}
         keyboardType="numeric"
         value={duration}
-        onChangeText={setDuration}
+        onChangeText={handleDurationChange}
       />
 
       <Text style={[commonStyles.label, { color: theme.text }]}>Date *</Text>
@@ -184,21 +206,26 @@ export default function EditActivity({ route, navigation }) {
 
       {special && (
         <View style={commonStyles.checkboxContainer}>
-          <Text style={[commonStyles.label, { color: theme.text }]}>This item is marked as special. Select the checkbox if you would like to approve it.
+          <Text style={[commonStyles.label, { color: theme.text }]}>
+            This item is marked as special. Select the checkbox if you would like to approve it.
           </Text>
           <Pressable onPress={() => {
-            setIsChecked(!isChecked);
-            if (isChecked) setIsSpecial(false); // Only set to false if checked
+            setIsChecked((prevChecked) => {
+              const newChecked = !prevChecked;
+              setIsSpecial(!newChecked);
+              return newChecked;
+            }
+          )
           }}>
             <Ionicons name={isChecked ? "checkbox" : "square-outline"} size={24} color={theme.primary} />
           </Pressable>
         </View>
       )}
 
-    <View style={commonStyles.buttonContainer}>
-      <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
-      <Button title="Save" onPress={handleSave} themeType={theme} />
-    </View>
+      <View style={commonStyles.buttonContainer}>
+        <Button title="Cancel" onPress={() => navigation.goBack()} themeType={theme} />
+        <Button title="Save" onPress={handleSave} themeType={theme} />
+      </View>
     </View>
   );
 }
